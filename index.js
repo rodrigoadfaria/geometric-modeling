@@ -3,9 +3,10 @@ var lightAmbient = vec4( 0.2, 0.2, 0.2, 1.0 );
 var lightDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
 var lightSpecular = vec4( 1.0, 1.0, 1.0, 1.0 );
 
-var materialAmbient = vec4( 1.0, 0.0, 1.0, 1.0 );
-var materialDiffuse = vec4( 1.0, 0.8, 0.0, 1.0);
-var materialSpecular = vec4( 1.0, 0.8, 0.0, 1.0 );
+// #f50057
+var materialAmbient = vec4( 245/255.0, 0.0, 87/255.0, 1.0 );
+var materialDiffuse = vec4( 245/255.0, 0.0, 87/255.0, 1.0 );
+var materialSpecular = vec4( 245/255.0, 0.0, 87/255.0, 1.0 );
 var materialShininess = 100.0;
 
 // transformation and projection matrices
@@ -34,8 +35,6 @@ $( document ).ready(function() {
     canvasObjs.push(canvasClosed);
     canvasObjs.push(canvasOpen);    
     
-	prepareObjectMenu();
-	
 	resizeCanvas();
 });
 
@@ -44,9 +43,6 @@ $( document ).ready(function() {
 * the shader program variables.
 */
 function init() {
-    if (isStart)// pass here just once
-        prepareElements();
-    
     for (i = 0; i < canvasObjs.length; i++) {
         var cgCanvas = canvasObjs[i];
         var gl = cgCanvas.gl;
@@ -74,56 +70,6 @@ function init() {
     
     render();
     $('.overlay').hide();
-};
-
-/**
-* Prepare the elements of the page to listen to the needed events.
-*/
-function prepareElements() {
-	var btnMeshFlat = $("#shading-flat");
-	var btnMeshSmooth = $("#shading-smooth");
-	btnMeshFlat.click(function() {
-		btnMeshSmooth.removeClass('active');
-		btnMeshFlat.addClass('active');
-		
-		scene.isSmoothShading = false;
-		scene.toggleMeshShader();
-		render();
-	});
-
-	btnMeshSmooth.click(function() {
-		btnMeshFlat.removeClass('active');
-		btnMeshSmooth.addClass('active');
-		
-		scene.isSmoothShading = true;
-		scene.toggleMeshShader();
-		render();
-	});
-
-	var btnTriangles = $("#btn-triangles");
-	var btnLines = $("#btn-lines");
-	btnTriangles.click(function() {
-		btnLines.removeClass('active');
-		btnTriangles.addClass('active');
-		
-		glDraw = GL_DRAW.TRIANGLES;
-		render();
-	});
-
-	btnLines.click(function() {
-		btnTriangles.removeClass('active');
-		btnLines.addClass('active');
-		
-		glDraw = GL_DRAW.LINE_STRIP;
-		render();
-	});
-	
-    $("#btn-load-file").click(function() {
-		$("#files").trigger('click');
-	});
-	$("#files").change(function (evt) {
-		setupFileLoad(evt);
-    });
 };
 
 /**
@@ -187,94 +133,4 @@ function render() {
             gl.drawArrays(primitive, 0, obj.vertices.length);
         }
     }
-};
-
-/**
-* Set up the button to the file load event.
-*/
-function setupFileLoad(evt) {
-	//Retrieve the file chosen from the FileList object
-	var file = evt.target.files[0]; 
-
-	if (file) {
-		$('.overlay').show();
-		var fileReader = new FileReader();
-		fileReader.onload = function(e) {
-			var contents = e.target.result;
-			
-			loadObject(contents, file.name);			
-		}
-		
-		fileReader.readAsText(file);
-	} else { 
-		alert("Ops, you need to select a valid file :(");
-	}
-};
-
-/**
-* Call the parser to get the file content
-* and keep it in our obj variable.
-*/
-function loadObject(data, fileName) {
-	var obj = loadObjFile(data);
-	if (obj) {
-        for (k = 0; k < canvasObjs.length; k++) {
-            var cgCanvas = canvasObjs[k];    
-            cgCanvas.scene.add(obj);
-            
-            isStart = false;
-        }
-		init();
-	}	
-};
-
-function prepareObjectMenu() {
-	$('#exp-obj-list').find('li:has(ul)').click( function(event) {
-		if (this == event.target) {
-			$(this).toggleClass('expanded');
-			$(this).children('ul').toggle('medium');
-			
-			$('#exp-obj-list>li').removeClass('active');
-			if ($(this).hasClass('expanded')) {
-				var idx = $(this).index();
-				manipulator.setActiveObjectIndex(idx);
-				$(this).addClass('active');
-				
-				manipulator.updateView();
-				render();
-			} else {
-				manipulator.setActiveObjectIndex(-1);
-				$(this).removeClass('active');
-				render();
-			}
-		}
-		
-		return false;
-	})
-	.addClass('collapsed')
-	.children('ul').hide();
-};
-
-function rebuildList() {
-	if (scene) {
-		$('#exp-obj-list').empty();
-		for (i = 0; i < scene.meshes.length; i++) {
-		var obj = scene.meshes[i];
-			appendObjItem(obj.name, obj.vertices.length, obj.faces.length);
-		}
-	}
-};
-
-function appendObjItem(name, faces, vertices) {
-	$('#exp-obj-list').find('li:has(ul)').unbind('click');
-	$('.collapsed').removeClass('expanded');
-    $('.collapsed').children().hide('medium');
-
-	var child =  '<li>' + name +
-					'<ul>Faces: <span class=".face-number">'+ faces +'</span></ul>'+
-					'<ul>Vertices: <span class=".vertices-number">'+ vertices +'</span></ul>'
-				'</li>';
-	$('#exp-obj-list').append(child);
-	
-	prepareObjectMenu();
 }

@@ -128,7 +128,6 @@ void main() {
 <script type="text/javascript" src="./js/Manipulator.js"></script>
 <script type="text/javascript" src="./js/CGCanvas.js"></script>
 
-<script type="text/javascript" src="obj-reader.js"></script>
 <script type="text/javascript" src="index.js"></script>
 
 <body>
@@ -137,53 +136,9 @@ void main() {
 	<div id="header">
 		<span class="title">MAC0420-5744</span>
 		<span class="sub-title">Computer Graphics</span>
-        <button class="btn" id="btn-load-file">Load OBJ file...</button>
 		<span class="info">Institute of Mathematics and Statistics - University of Sao Paulo <a href="https://www.ime.usp.br/en"  target="_blank">>></a></span>
 	</div>
 
-	<div id="sidebar">
-		<span id="logo"><img src="./style/img/logo.png"></img></span>
-		<nav>
-			<dl>
-				<dt>
-					<h4>FILE</h4>					
-					<span class="btn-group">
-						<input type="file" id="files" name="files[]" accept=".obj,"></input>
-						<!--button class="btn" id="btn-load-file">Load OBJ file...</button-->
-						
-						<div id="obj-list-container">
-							<ul id="exp-obj-list"></ul>
-						</div>
-
-					</span>
-				</dt>
-				<dt>
-					<h4>SHADER</h4>
-					<span class="btn-group">
-						<button class="btn active" id="shading-vertex">Vertex</button>
-						<button class="btn" id="shading-fragment">Fragment</button>
-					</span>
-				</dt>
-				<dt>
-					<h4>MESH</h4>
-					<span class="btn-group">
-						<button class="btn active" id="shading-flat">Flat</button>
-						<button class="btn" id="shading-smooth">Smooth</button>
-					</span>
-				</dt>
-				<dt style="display: none;">
-					<h4>DRAW</h4>
-					<span class="btn-group">
-						<button class="btn active" id="btn-triangles">Triangles</button>
-						<button class="btn" id="btn-lines">Lines</button>
-					</span>
-				</dt>
-
-			</dl>
-		</nav>
-		
-	</div>
-		
 	<div id="main">        
 		<canvas id="gl-canvas-closed-curve" class="canvas" tabindex="1">
             Oops ... your browser doesn't support the HTML5 canvas element
