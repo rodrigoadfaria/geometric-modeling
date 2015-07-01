@@ -28,8 +28,54 @@ $( document ).ready(function() {
     canvasObjs.push(canvasOpen);    
     canvasObjs.push(canvasClosed);
     
+    setupFloatingMenu("#parameters", canvasClosed);
+    setupFloatingMenu("#parameters-segment", canvasOpen);
 	resizeCanvas();
 });
+
+/**
+* Set up the events for the floating menu of each 2D canvas
+* object.
+*/
+function setupFloatingMenu(divId, canvas) {
+    var append = divId == "#parameters-segment" ? "-segment" : "";
+    $(divId + " #clear" + append).click(function() {
+        canvas.clear();
+    });
+    
+    $(divId + " #curve-rags" + append).click(function() {
+        $(this).addClass('active');
+        $("#curve-bspline" + append).removeClass('active');
+        canvas.changeCurveType(false);
+    });
+
+    $(divId + " #curve-bspline" + append).click(function() {
+        $(this).addClass('active');
+        $(" #curve-rags" + append).removeClass('active');
+        canvas.changeCurveType(true);
+    });
+    
+    $(divId + " #points-curve" + append).change(function() {
+        var points = parseInt($(this).val());
+        if (isNaN(points)) {
+            alert("You must provide a valid number for the points :(")
+            return;
+        }
+        
+        canvas.setNumberOfPoints(points);
+    });
+
+    $(divId + " #degree-curve" + append).change(function() {
+        var degree = parseInt($(this).val());
+        if (isNaN(degree)) {
+            alert("You must provide a valid number for the degree :(")
+            return;
+        }
+        
+        canvas.setDegree(degree);
+    });
+    
+};
 
 /**
 * Set up the webgl, shaders, page components, and
