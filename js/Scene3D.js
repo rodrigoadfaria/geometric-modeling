@@ -1,7 +1,7 @@
 /**
 * Scene object
 */
-Scene = function() {
+Scene3D = function() {
 	this.gl = null;
     this.program = null;
 	
@@ -11,7 +11,7 @@ Scene = function() {
 	this.isSmoothShading = false;
 };
 
-Scene.prototype = {
+Scene3D.prototype = {
 	
 	/**
 	* Add an object to the scene according to the shader chosen by the user.

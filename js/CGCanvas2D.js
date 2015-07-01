@@ -18,9 +18,11 @@ CGCanvas2D = function(id, isClose) {
     this.program = null;
     
     this.degree              = 3;
+    this.pickPoint           = 0;
     this.numPoints           = 200;
     this.isSpline            = true;
     this.isClose             = isClose;
+    this.tempMouse           = null;
     this.curve               = null;
     this.viewMatrixLoc       = null;
     this.projectionMatrixLoc = null;
@@ -133,6 +135,7 @@ CGCanvas2D.prototype = {
         var x    = ((event.clientX - rect.left)/(rect.width)) * 2 - 1;
         var y    = 1 - 2 * ((event.clientY - rect.top)/(rect.height));
         var p    = vec4(x, y, -this.znear, 1);
+        var pick = 1;
 
         if(this.domain[0] > x)
             this.domain[0] = x;
@@ -146,15 +149,17 @@ CGCanvas2D.prototype = {
                 var cp     = this.controlPoints[i];
                 var size   = length(subtract(p, cp));
 
-                if(size < 0.1)
-                    return;
+                if(size < 0.1) {
+                    if(pick > size) {
+                        pick           = size;
+                        this.pickPoint = i;
+                    }
+                }
             }
             this.scene.meshes.pop();
             if(this.curve != null)
                 this.scene.meshes.pop();
         }
-
-        this.controlPoints.push(p);
 
         var square       = new Obj();
         square.primitive = this.gl.LINE_LOOP;
@@ -166,13 +171,22 @@ CGCanvas2D.prototype = {
         square.normals.push( vec4(x + 0.01, y + 0.01, -this.znear, 0));
         square.normals.push( vec4(x + 0.01, y + 0.01, -this.znear, 0));
         square.normals.push( vec4(x + 0.01, y + 0.01, -this.znear, 0));
-        this.scene.add(square);
+
+        if(pick != 1) {
+            this.controlPoints[this.pickPoint] = p;
+            this.scene.meshes[this.pickPoint]  = square;
+        }
+        else {
+            this.controlPoints.push(p);
+            this.pickPoint[this.controlPoints.length - 1];
+            this.scene.meshes.push(square);
+        }
 
         var line       = new Obj();
         line.primitive = this.linePrimitive;
         line.vertices  = this.controlPoints;
         line.normals   = this.controlPoints;
-        this.scene.add(line);
+        this.scene.meshes.push(line);
 
         if(this.controlPoints.length >= this.degree + 1) {
             var curveObj = new Obj();
@@ -181,7 +195,7 @@ CGCanvas2D.prototype = {
             curveObj.primitive = this.gl.LINE_STRIP;
             curveObj.vertices  = this.curve.drawPoints;
             curveObj.normals   = this.curve.drawPoints;
-            this.scene.add(curveObj);
+            this.scene.meshes.push(curveObj);
         }
 
         init();
@@ -193,6 +207,7 @@ CGCanvas2D.prototype = {
     */
     mouseUpListener: function(event) {
         this.mousedown = false;
+        this.tempMouse = null;
     },
 
     /**
@@ -202,9 +217,75 @@ CGCanvas2D.prototype = {
     * 2. Scale if the event is from the right click.
     */
     mouseMoveListener: function(event) {
+        if(!this.mousedown)
+            return;
+
+        var rect   = this.canvas.getBoundingClientRect();
+        var xMouse = ((event.pageX - rect.left)/(rect.width)) * 2 - 1;
+        var yMouse = 1 - 2 * ((event.pageY - rect.top)/(rect.height));
+        var x      = this.controlPoints[this.pickPoint][0];
+        var y      = this.controlPoints[this.pickPoint][1];
+        var delta  = null;
+        
+        delta = this.getDeltaMove(xMouse, yMouse);
+        if(delta[0] == 0 && delta[1] == 0)
+            return;
+
+        var newx = x + delta[0];
+        var newy = y + delta[1];
+        if(this.domain[0] > newx)
+            this.domain[0] = newx;
+        if(this.domain[1] < newx)
+            this.domain[1] = newx;
+
+        if(this.controlPoints.length >= 2)
+            this.scene.meshes.pop();
+        if(this.curve != null)
+            this.scene.meshes.pop();
+
+        var square       = new Obj();
+        square.primitive = this.gl.LINE_LOOP;
+        square.vertices.push(vec4(newx + 0.01, newy + 0.01, -this.znear, 1));
+        square.vertices.push(vec4(newx - 0.01, newy + 0.01, -this.znear, 1));
+        square.vertices.push(vec4(newx - 0.01, newy - 0.01, -this.znear, 1));
+        square.vertices.push(vec4(newx + 0.01, newy - 0.01, -this.znear, 1));
+        square.normals.push( vec4(newx + 0.01, newy + 0.01, -this.znear, 0));
+        square.normals.push( vec4(newx + 0.01, newy + 0.01, -this.znear, 0));
+        square.normals.push( vec4(newx + 0.01, newy + 0.01, -this.znear, 0));
+        square.normals.push( vec4(newx + 0.01, newy + 0.01, -this.znear, 0));
+
+        this.controlPoints[this.pickPoint] = vec4(newx, newy, -this.znear, 1);
+        this.scene.meshes[this.pickPoint]  = square;
+
+        var line       = new Obj();
+        line.primitive = this.linePrimitive;
+        line.vertices  = this.controlPoints;
+        line.normals   = this.controlPoints;
+        this.scene.meshes.push(line);
+
+        if(this.curve != null) {
+            var curveObj = new Obj();
+
+            this.curve = new Polynomial(this.controlPoints, this.isSpline, this.degree, this.domain, this.isClose, this.numPoints);
+            curveObj.primitive = this.gl.LINE_STRIP;
+            curveObj.vertices  = this.curve.drawPoints;
+            curveObj.normals   = this.curve.drawPoints;
+            this.scene.meshes.push(curveObj);
+        }
+
+        init();
     },
 
-    getMouseMoveDirection: function (event) {
+    getDeltaMove: function(x, y) {
+        if(this.tempMouse == null) {
+            this.tempMouse = [x, y];
+            return [0, 0];
+        }
+
+        var delta  = [x - this.tempMouse[0], y - this.tempMouse[1]];
+        this.tempMouse[0] = x;
+        this.tempMouse[1] = y;
+        return delta;
     },
     
     /**

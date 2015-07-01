@@ -10,16 +10,6 @@ Scene2D = function() {
 };
 
 Scene2D.prototype = {
-	
-	/**
-	* Add an object to the scene according to the shader chosen by the user.
-	* For each object, we generate a scale and translation matrix and put it
-	* into the modelMatrix to be rendered.
-	*/
-	add: function(object) {
-			this.meshes.push(object);
-	},
-	
 	/**
 	* Create the buffers for the shaders.
 	*/
