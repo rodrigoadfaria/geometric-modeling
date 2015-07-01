@@ -156,39 +156,66 @@ void main() {
             Oops ... your browser doesn't support the HTML5 canvas element
 		</canvas>
 
-		<div id="manipulator" class="floating">
-			<span class="title">Manipulator</span>
+        <!-- canvas closed parameters -->
+		<div id="parameters" class="floating">
+			<span class="title">Curve parameters</span>
 			
-			<div id="m-content-none" class="man-content">
-				<span class="m-type">NONE</span>
-				<div>press T to translate, S to scale, R to rotate</div>
-			</div>
-			
-			<div id="m-content-rotate" class="man-content">
-				<span class="m-type">ROTATE</span>
-				<div>
-					<div class="m-offset"></div>
-					<div>press X, Y, or Z to select an axis</div>
-				</div>
-			</div>
-			
-			<div id="m-content-translate" class="man-content">
-				<span class="m-type">TRANSLATE</span>
-				<div>
-					<div class="m-offset"></div>
-					<div>press X, Y, or Z to select an axis</div>
-				</div>
-			</div>
-			
-			<div id="m-content-scale" class="man-content">
-				<span class="m-type">SCALE</span>
-				<div>
-					<div class="m-offset"></div>
-					<div>press X, Y, or Z to select an axis</div>
-				</div>
-			</div>
-		</div>
+			<div class="table">
+                <div id="params-curve-type" class="floating-content">
+                    <span class="m-type">TYPE</span>
+                    <span class="btn-group">
+                        <button class="btn active" id="curve-rags">RaGs</button>
+                        <button class="btn" id="curve-bspline">B-Spline</button>
+                    </span>				
+                </div>
 
+                <div id="params-curve-points" class="floating-content">
+                    <span class="m-type">POINTS</span>
+                    <span class="btn-group">
+                        <input class="btn input" id="points-curve" />
+                    </span>				
+                </div>
+
+                <div id="params-curve-degree" class="floating-content">
+                    <span class="m-type">DEGREE</span>
+                    <span class="btn-group">
+                        <input class="btn input" id="degree-curve" />
+                    </span>				
+                </div>
+            </div>
+            
+        </div>
+        
+        <!-- canvas segment parameters -->
+		<div id="parameters-segment" class="floating">
+			<span class="title">Curve parameters</span>
+			
+			<div class="table">
+                <div id="params-curve-type-segment" class="floating-content">
+                    <span class="m-type">TYPE</span>
+                    <span class="btn-group">
+                        <button class="btn active" id="curve-rags-segment">RaGs</button>
+                        <button class="btn" id="curve-bspline-segment">B-Spline</button>
+                    </span>				
+                </div>
+
+                <div id="params-curve-points-segment" class="floating-content">
+                    <span class="m-type">POINTS</span>
+                    <span class="btn-group">
+                        <input class="btn input" id="points-curve-segment" />
+                    </span>				
+                </div>
+
+                <div id="params-curve-degree-segment" class="floating-content">
+                    <span class="m-type">DEGREE</span>
+                    <span class="btn-group">
+                        <input class="btn input" id="degree-curve-segment" />
+                    </span>				
+                </div>
+            </div>
+            
+        </div>
+        
 	</div>
 
 </body>

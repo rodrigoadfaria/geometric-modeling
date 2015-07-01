@@ -71,6 +71,7 @@ function init() {
 window.onresize = resizeCanvas;
 
 function resizeCanvas() {
+    var offset = 0;
     $.each( canvasObjs, function( key, cgCanvas ) {
         var canvas = cgCanvas.canvas;
         var width = canvas.clientWidth;
@@ -79,11 +80,13 @@ function resizeCanvas() {
             canvas.width = width;
             canvas.height = height;
         }
-
+        
+        offset = canvas.width;
         if(cgCanvas.is3D)
             cgCanvas.aspect = canvas.width/canvas.height;
     });
     
+    $('#parameters-segment').css( { marginLeft : offset + 15 + "px" } );
     init();
 };
 
