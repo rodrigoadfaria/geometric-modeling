@@ -2,7 +2,7 @@
 * CGCanvas object used to generalize the functions
 * and iterations over all canvas objects.
 */
-CGCanvas = function(id) {
+CGCanvas3D = function(id) {
     //used to track the canvas element in the HTML page
     this.id = id;
 
@@ -15,7 +15,7 @@ CGCanvas = function(id) {
     
     this.gl = _gl;
     this.program = null;
-    this.scene = new Scene();
+    this.scene   = new Scene3D();
     
     this.viewMatrixLoc = null;
     this.projectionMatrixLoc = null;
@@ -55,7 +55,7 @@ CGCanvas = function(id) {
 
 };
 
-CGCanvas.prototype = {
+CGCanvas3D.prototype = {
 
     prepare: function() {
         // create viewport and clear color

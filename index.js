@@ -20,7 +20,7 @@ var isStart = true;
 
 var canvasObjs = new Array();
 $( document ).ready(function() {
-    canvasExtrusion = new CGCanvas("gl-canvas-extrusion");
+    canvasExtrusion = new CGCanvas3D("gl-canvas-extrusion");
     canvasClosed    = new CGCanvas2D("gl-canvas-closed-curve", true);
     canvasOpen      = new CGCanvas2D("gl-canvas-open-curve", false);
     
