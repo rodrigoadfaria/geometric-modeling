@@ -197,6 +197,13 @@ span.info a {
   padding: 0;
 }
 
+.title .clear {
+  float: right;
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .table {
   display: table;
   width: auto;

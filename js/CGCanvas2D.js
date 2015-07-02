@@ -78,7 +78,24 @@ CGCanvas2D.prototype = {
         this.setupCanvasMouseEvents();
     },
 
-    changeTypeCurve: function(isSpline) {
+    /**
+    * Set up the degree of the polynomial.
+    */
+    setDegree: function(degree) {
+        this.degree = degree != undefined ? degree : 3;//3 default
+    },
+
+    /**
+    * Set up the number of points to be interpolated.
+    */
+    setNumberOfPoints: function(nPoints) {
+        this.numPoints = nPoints != undefined ? nPoints : 200;//200 default
+    },
+    
+    /**
+    * Set up the type of the curve: RaGs or B-Splines.
+    */
+    changeCurveType: function(isSpline) {
         if(this.isSpline == isSpline)
             return;
 
@@ -302,15 +319,18 @@ CGCanvas2D.prototype = {
         
         if (code == 46) {
             if(this.controlPoints == null) {
-                alert("Nenhum ponto a ser deletado!")
+                console.log("Nenhum ponto a ser deletado!")
                 return;
-            }
-            else {
-                this.controlPoints = null;
-                this.curve         = null;
-                this.scene         = new Scene2D();
-                init();
+            } else {
+                this.clear();
             }
         }
     },
+    
+    clear: function() {
+        this.controlPoints = null;
+        this.curve         = null;
+        this.scene         = new Scene2D();
+        init();
+    }
 };
