@@ -96,9 +96,10 @@ CGCanvas2D.prototype = {
             this.scene.meshes.pop();
             this.scene.meshes.push(curveObj);
         }
-        else
+        else {
             this.curve = null;
             this.scene.meshes.pop();
+        }
 
         init()
     },
