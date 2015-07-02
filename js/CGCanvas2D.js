@@ -83,6 +83,24 @@ CGCanvas2D.prototype = {
     */
     setDegree: function(degree) {
         this.degree = degree != undefined ? degree : 3;//3 default
+
+        if(this.curve == null)
+            return;
+
+        if(this.controlPoints.length >= this.degree + 1) {
+            var curveObj = new Obj();
+            this.curve = new Polynomial(this.controlPoints, this.isSpline, this.degree, this.domain, this.isClose, this.numPoints);
+            curveObj.primitive = this.gl.LINE_STRIP;
+            curveObj.vertices  = this.curve.drawPoints;
+            curveObj.normals   = this.curve.drawPoints;
+            this.scene.meshes.pop();
+            this.scene.meshes.push(curveObj);
+        }
+        else
+            this.curve = null;
+            this.scene.meshes.pop();
+
+        init()
     },
 
     /**
@@ -90,6 +108,19 @@ CGCanvas2D.prototype = {
     */
     setNumberOfPoints: function(nPoints) {
         this.numPoints = nPoints != undefined ? nPoints : 200;//200 default
+
+        if(this.curve == null)
+            return;
+
+        var curveObj = new Obj();
+        this.curve = new Polynomial(this.controlPoints, this.isSpline, this.degree, this.domain, this.isClose, this.numPoints);
+        curveObj.primitive = this.gl.LINE_STRIP;
+        curveObj.vertices  = this.curve.drawPoints;
+        curveObj.normals   = this.curve.drawPoints;
+        this.scene.meshes.pop();
+        this.scene.meshes.push(curveObj);
+
+        init()
     },
     
     /**
@@ -100,6 +131,9 @@ CGCanvas2D.prototype = {
             return;
 
         this.isSpline = isSpline;
+        
+        if(this.curve == null)
+            return;
 
         var curveObj = new Obj();
         this.curve = new Polynomial(this.controlPoints, this.isSpline, this.degree, this.domain, this.isClose, this.numPoints);
@@ -107,7 +141,7 @@ CGCanvas2D.prototype = {
         curveObj.vertices  = this.curve.drawPoints;
         curveObj.normals   = this.curve.drawPoints;
         this.scene.meshes.pop();
-        this.scene.add(curveObj);
+        this.scene.meshes.push(curveObj);
 
         init();
     },
