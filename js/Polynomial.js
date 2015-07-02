@@ -15,17 +15,18 @@ Polynomial = function(controlPoints, isSpline, degree, domain, isClose, numPoint
             this.control.push([controlPoints[i][0], controlPoints[i][1]]);
     }
 
-    for(i = 0; i < this.knot.length - 1; i++) {
-        var r = this.degree/(this.knot[i + this.degree + 1] - this.knot[i + 1]);
-        this.controlDel.push([r * this.control[i + 1][0], r * this.control[i][1]]);
-    }
 
     var knotSize = this.control.length + this.degree + 1;
-    var delta    = (domain[1] - domain[0])/knotSize;
-    var t_i      = domain[0];
+    var delta    = 1/knotSize;//(domain[1] - domain[0])/knotSize;
+    var t_i      = 0;//domain[0];
     for(i = 0; i < knotSize; i++) {
         this.knot.push(t_i);
         t_i += delta;
+    }
+    
+    for(i = 0; i < this.control.length - 1; i++) {
+        var r = this.degree/(this.knot[i + this.degree + 1] - this.knot[i + 1]);
+        this.controlDel.push([r * this.control[i + 1][0], r * this.control[i][1]]);
     }
 
     var x     = this.knot[this.degree];
@@ -66,7 +67,7 @@ Polynomial.prototype = {
         for(i = 0; i < this.xValue.length; i++) {
             n = [0, 0];
             for(j = 0; j < this.controlDel.length; j++) {
-                var N = this.CoxDeBoor(this.degree - 1, j, this.xValue[i]);
+                var N = this.coxDeBoor(this.degree - 1, j, this.xValue[i]);
                 n[0] += this.controlDel[j][0] * N;
                 n[1] += this.controlDel[j][1] * N;
             }
