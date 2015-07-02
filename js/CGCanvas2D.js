@@ -185,7 +185,8 @@ CGCanvas2D.prototype = {
         var line       = new Obj();
         line.primitive = this.linePrimitive;
         line.vertices  = this.controlPoints;
-        line.normals   = this.controlPoints;
+        for(i = 0; i < this.controlPoints.length; i++)
+            line.normals.push(vec4(this.controlPoints[i][0], this.controlPoints[i][1], this.controlPoints[i][2], 0))
         this.scene.meshes.push(line);
 
         if(this.controlPoints.length >= this.degree + 1) {
@@ -194,7 +195,7 @@ CGCanvas2D.prototype = {
             this.curve = new Polynomial(this.controlPoints, this.isSpline, this.degree, this.domain, this.isClose, this.numPoints);
             curveObj.primitive = this.gl.LINE_STRIP;
             curveObj.vertices  = this.curve.drawPoints;
-            curveObj.normals   = this.curve.drawPoints;
+            curveObj.normals   = this.curve.drawNormals;
             this.scene.meshes.push(curveObj);
         }
 
@@ -260,7 +261,8 @@ CGCanvas2D.prototype = {
         var line       = new Obj();
         line.primitive = this.linePrimitive;
         line.vertices  = this.controlPoints;
-        line.normals   = this.controlPoints;
+        for(i = 0; i < this.controlPoints.length; i++)
+            line.normals.push(vec4(this.controlPoints[i][0], this.controlPoints[i][1], this.controlPoints[i][2], 0))
         this.scene.meshes.push(line);
 
         if(this.curve != null) {
@@ -269,7 +271,7 @@ CGCanvas2D.prototype = {
             this.curve = new Polynomial(this.controlPoints, this.isSpline, this.degree, this.domain, this.isClose, this.numPoints);
             curveObj.primitive = this.gl.LINE_STRIP;
             curveObj.vertices  = this.curve.drawPoints;
-            curveObj.normals   = this.curve.drawPoints;
+            curveObj.normals   = this.curve.drawNormals;
             this.scene.meshes.push(curveObj);
         }
 
