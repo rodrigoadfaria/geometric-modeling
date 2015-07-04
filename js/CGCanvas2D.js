@@ -222,7 +222,7 @@ CGCanvas2D.prototype = {
             
 
             // FIXME testing the open spline
-            if (this.curve && this.curve.isClose) {
+            /*if (this.curve && this.curve.isClose) {
                 CGCanvas2D.closedSpline = curveObj.vertices;
             }
 
@@ -238,7 +238,7 @@ CGCanvas2D.prototype = {
                     //CGCanvas2D.surface = openSpline(this.domain[0], this.domain[1], this.numPoints, this.degree, 
                     //                                controlPointsx, controlPointsy, CGCanvas2D.closedSpline)
                 }
-            }
+            }*/
 
         }
 
