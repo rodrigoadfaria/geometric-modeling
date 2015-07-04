@@ -46,12 +46,20 @@ function setupFloatingMenu(divId, canvas) {
     $(divId + " #curve-rags" + append).click(function() {
         $(this).addClass('active');
         $("#curve-bspline" + append).removeClass('active');
+        
+        //show the sigma content
+        $(divId + " #params-curve-sigma" + append).show();
+
         canvas.changeCurveType(false);
     });
 
     $(divId + " #curve-bspline" + append).click(function() {
         $(this).addClass('active');
         $(" #curve-rags" + append).removeClass('active');
+
+        //hide the sigma content
+        $(divId + " #params-curve-sigma" + append).hide();
+
         canvas.changeCurveType(true);
     });
     
@@ -73,6 +81,16 @@ function setupFloatingMenu(divId, canvas) {
         }
         
         canvas.setDegree(degree);
+    });
+
+    $(divId + " #sigma-curve" + append).change(function() {
+        var sigma = parseFloat($(this).val());
+        if (isNaN(sigma)) {
+            alert("You must provide a valid real number for the sigma :(")
+            return;
+        }
+        
+        canvas.setSigma(sigma);
     });
     
 };
@@ -132,7 +150,9 @@ function resizeCanvas() {
             cgCanvas.aspect = canvas.width/canvas.height;
     });
     
-    $('#parameters-segment').css( { marginLeft : offset + 15 + "px" } );
+    $('#parameters-segment').css( { marginLeft : offset + 12 + "px" } );
+    $('#parameters').css( { width : offset-30 + "px" } );
+    $('#parameters-segment').css( { width : offset-30 + "px" } );
     init();
 };
 
