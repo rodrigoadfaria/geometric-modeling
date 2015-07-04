@@ -29,7 +29,7 @@ CGCanvas3D = function(id) {
     // our universe perspective view
     this.znear = 0.1;
     this.zfar = 100.0;
-    this.fovy = 30.0;       // field-of-view in Y direction angle (in degrees)
+    this.fovy = 10.0;       // field-of-view in Y direction angle (in degrees)
     this.aspect = 1.0;      // viewport aspect ratio
 
     // disable the context menu when right click is pressed

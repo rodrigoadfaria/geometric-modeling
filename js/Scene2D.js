@@ -13,7 +13,7 @@ Scene2D.prototype = {
 	/**
 	* Create the buffers for the shaders.
 	*/
-	createBuffers: function(points, normals, colors) {
+	createBuffers: function(points, normals) {
 		var nBuffer = this.gl.createBuffer();
 		this.gl.bindBuffer( this.gl.ARRAY_BUFFER, nBuffer );
 		this.gl.bufferData( this.gl.ARRAY_BUFFER, flatten(normals), this.gl.STATIC_DRAW );
@@ -30,15 +30,7 @@ Scene2D.prototype = {
 		this.gl.vertexAttribPointer(vPosition, 4, this.gl.FLOAT, false, 0, 0);
 		this.gl.enableVertexAttribArray(vPosition);
 		
-		var vColorBuffer = this.gl.createBuffer();
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vColorBuffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, flatten(colors), this.gl.STATIC_DRAW);
-
-		var vColor = this.gl.getAttribLocation(this.program, "vColor");
-		this.gl.vertexAttribPointer(vColor, 4, this.gl.FLOAT, false, 0, 0);
-		this.gl.enableVertexAttribArray(vColor);
-		
-		var buffer = new Buffer(vBuffer, nBuffer, vColorBuffer);
+		var buffer = new Buffer(vBuffer, nBuffer);
 		return buffer;
 	},
     
@@ -51,8 +43,7 @@ Scene2D.prototype = {
 /**
 * Buffer object
 */
-Buffer = function(vertexBuffer, normalBuffer, colorBuffer) {
+Buffer = function(vertexBuffer, normalBuffer) {
 	this.nBuffer = normalBuffer;
 	this.vBuffer = vertexBuffer;
-    this.cBuffer = colorBuffer;
 };

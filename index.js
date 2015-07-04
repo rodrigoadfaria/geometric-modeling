@@ -24,9 +24,9 @@ $( document ).ready(function() {
     canvasClosed    = new CGCanvas2D("gl-canvas-closed-curve", true);
     canvasOpen      = new CGCanvas2D("gl-canvas-open-curve", false);
     
+    //canvasObjs.push(canvasExtrusion);
     canvasObjs.push(canvasOpen);    
     canvasObjs.push(canvasClosed);
-    canvasObjs.push(canvasExtrusion);
     
     setupFloatingMenu("#parameters", canvasClosed);
     setupFloatingMenu("#parameters-segment", canvasOpen);
@@ -107,21 +107,6 @@ function init() {
         gl.uniform1f(gl.getUniformLocation(cgCanvas.program, "shininess"), materialShininess);        
     }
     
-    //FIXME
-    if (CGCanvas2D.surface) {
-        var extrusion = new Obj();
-        extrusion.vertices = CGCanvas2D.surface.surface;
-        extrusion.normals = CGCanvas2D.surface.surface;
-        extrusion.primitive = gl.LINES_STRIP;
-        extrusion.setColor(Color.rgb_000_128_148);
-        
-        var exCanvas = canvasObjs[2];
-        exCanvas.scene.remove(1);//remove just the first (or last) object,
-                        // for now, we have just one
-        exCanvas.scene.add(extrusion);
-        console.log('passou no if');
-    }
-
     render();
     $('.overlay').hide();
 };
@@ -143,7 +128,7 @@ function resizeCanvas() {
         }
         
         offset = canvas.width;
-        if(cgCanvas instanceof CGCanvas3D)
+        if(cgCanvas.is3D)
             cgCanvas.aspect = canvas.width/canvas.height;
     });
     
@@ -164,12 +149,11 @@ function render() {
         gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         viewMatrix = lookAt(cgCanvas.eye, cgCanvas.at, cgCanvas.up);
-        if(cgCanvas instanceof CGCanvas3D) {
+        if(cgCanvas.is3D) {
             var vtrm = cgCanvas.virtualTB.getRotationMatrix();
             viewMatrix = mult(viewMatrix, vtrm);
         }
-        
-        if(cgCanvas instanceof CGCanvas3D)
+        if(cgCanvas.is3D)
             projectionMatrix = perspective(cgCanvas.fovy, cgCanvas.aspect, cgCanvas.znear, cgCanvas.zfar);
         else
             projectionMatrix = ortho(cgCanvas.xleft, cgCanvas.xright, cgCanvas.ybottom, cgCanvas.ytop, cgCanvas.znear, cgCanvas.zfar);
@@ -179,9 +163,9 @@ function render() {
 
         scene.buffers = new Array(scene.meshes.length);
         for(i = 0; i < scene.meshes.length; i++) {
-            obj = scene.meshes[i];            
+            obj = scene.meshes[i];
             
-            var bufferObj = scene.createBuffers(obj.vertices, obj.normals, obj.colors);
+            var bufferObj = scene.createBuffers(obj.vertices, obj.normals);
             if (bufferObj) {
                 scene.buffers[i] = bufferObj;
             }

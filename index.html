@@ -10,8 +10,6 @@
 <script id="vertex-shader" type="x-shader/x-vertex">
 attribute  vec4 vPosition;
 attribute  vec4 vNormal;
-attribute  vec4 vColor;
-
 varying vec4 fColor;
 
 uniform vec4 ambientProduct; 
@@ -55,9 +53,7 @@ void main() {
 
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vPosition;
     
-    //FIXME removed the ambient contribution to work the vertex color
-    // check if we are not gonna need this in the future
-    fColor = vColor ;//+ ambient + diffuse + specular;
+    fColor = ambient + diffuse + specular;
     
     fColor.a = 1.0;
 }
@@ -136,7 +132,6 @@ void main() {
 <script type="text/javascript" src="./js/CGCanvas3D.js"></script>
 <script type="text/javascript" src="./js/CGCanvas2D.js"></script>
 <script type="text/javascript" src="./js/Polynomial.js"></script>
-<script type="text/javascript" src="./js/Colors.js"></script>
 <script type="text/javascript" src="./js/Obj.js"></script>
 
 <script type="text/javascript" src="index.js"></script>
@@ -170,8 +165,8 @@ void main() {
                 <div id="params-curve-type" class="floating-content">
                     <span class="m-type">TYPE</span>
                     <span class="btn-group">
-                        <button class="btn" id="curve-rags">RaGs</button>
-                        <button class="btn active" id="curve-bspline">B-Spline</button>
+                        <button class="btn active" id="curve-rags">RaGs</button>
+                        <button class="btn" id="curve-bspline">B-Spline</button>
                     </span>				
                 </div>
 
@@ -202,8 +197,8 @@ void main() {
                 <div id="params-curve-type-segment" class="floating-content">
                     <span class="m-type">TYPE</span>
                     <span class="btn-group">
-                        <button class="btn" id="curve-rags-segment">RaGs</button>
-                        <button class="btn active" id="curve-bspline-segment">B-Spline</button>
+                        <button class="btn active" id="curve-rags-segment">RaGs</button>
+                        <button class="btn" id="curve-bspline-segment">B-Spline</button>
                     </span>				
                 </div>
 
