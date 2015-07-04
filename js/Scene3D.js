@@ -73,7 +73,7 @@ Scene3D.prototype = {
 	/**
 	* Create the buffers for the shaders.
 	*/
-	createBuffers: function(points, normals) {
+	createBuffers: function(points, normals, colors) {
 		var nBuffer = this.gl.createBuffer();
 		this.gl.bindBuffer( this.gl.ARRAY_BUFFER, nBuffer );
 		this.gl.bufferData( this.gl.ARRAY_BUFFER, flatten(normals), this.gl.STATIC_DRAW );
@@ -90,7 +90,15 @@ Scene3D.prototype = {
 		this.gl.vertexAttribPointer(vPosition, 4, this.gl.FLOAT, false, 0, 0);
 		this.gl.enableVertexAttribArray(vPosition);
 		
-		var buffer = new Buffer(vBuffer, nBuffer);
+		var vColorBuffer = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vColorBuffer);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, flatten(colors), this.gl.STATIC_DRAW);
+
+		var vColor = this.gl.getAttribLocation(this.program, "vColor");
+		this.gl.vertexAttribPointer(vColor, 4, this.gl.FLOAT, false, 0, 0);
+		this.gl.enableVertexAttribArray(vColor);
+		
+		var buffer = new Buffer(vBuffer, nBuffer, vColorBuffer);
 		return buffer;
 	},
     
@@ -103,7 +111,8 @@ Scene3D.prototype = {
 /**
 * Buffer object
 */
-Buffer = function(vertexBuffer, normalBuffer) {
+Buffer = function(vertexBuffer, normalBuffer, colorBuffer) {
 	this.nBuffer = normalBuffer;
 	this.vBuffer = vertexBuffer;
+    this.cBuffer = colorBuffer;
 };

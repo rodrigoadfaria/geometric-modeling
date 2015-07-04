@@ -185,7 +185,7 @@ function render() {
         for(i = 0; i < scene.meshes.length; i++) {
             obj = scene.meshes[i];
             
-            var bufferObj = scene.createBuffers(obj.vertices, obj.normals);
+            var bufferObj = scene.createBuffers(obj.vertices, obj.normals, obj.colors);
             if (bufferObj) {
                 scene.buffers[i] = bufferObj;
             }

@@ -97,6 +97,7 @@ CGCanvas2D.prototype = {
                 curveObj.primitive = this.gl.LINE_STRIP;
                 curveObj.vertices  = this.curve.drawPoints;
                 curveObj.normals   = this.curve.drawNormals;
+                curveObj.setColor(Color.rgb_000_128_148);
                 this.scene.meshes.push(curveObj);
             }
             else {
@@ -115,6 +116,7 @@ CGCanvas2D.prototype = {
             curveObj.primitive = this.gl.LINE_STRIP;
             curveObj.vertices  = this.curve.drawPoints;
             curveObj.normals   = this.curve.drawNormals;
+            curveObj.setColor(Color.rgb_000_128_148);
             this.scene.meshes.push(curveObj);
         }
 
@@ -137,6 +139,7 @@ CGCanvas2D.prototype = {
         curveObj.primitive = this.gl.LINE_STRIP;
         curveObj.vertices  = this.curve.drawPoints;
         curveObj.normals   = this.curve.drawNormals;
+        curveObj.setColor(Color.rgb_000_128_148);
         this.scene.meshes.push(curveObj);
 
         init();
@@ -161,6 +164,7 @@ CGCanvas2D.prototype = {
         curveObj.primitive = this.gl.LINE_STRIP;
         curveObj.vertices  = this.curve.drawPoints;
         curveObj.normals   = this.curve.drawNormals;
+        curveObj.setColor(Color.rgb_000_128_148);
         this.scene.meshes.push(curveObj);
 
         init();
@@ -188,6 +192,7 @@ CGCanvas2D.prototype = {
                 curveObj.primitive = this.gl.LINE_STRIP;
                 curveObj.vertices  = this.curve.drawPoints;
                 curveObj.normals   = this.curve.drawNormals;
+                curveObj.setColor(Color.rgb_000_128_148);
                 this.scene.meshes.push(curveObj);
             }
             else {
@@ -206,6 +211,7 @@ CGCanvas2D.prototype = {
             curveObj.primitive = this.gl.LINE_STRIP;
             curveObj.vertices  = this.curve.drawPoints;
             curveObj.normals   = this.curve.drawNormals;
+            curveObj.setColor(Color.rgb_000_128_148);
             this.scene.meshes.push(curveObj);
         }
 
@@ -283,6 +289,7 @@ CGCanvas2D.prototype = {
         square.normals.push( vec4(x + 0.01, y + 0.01, -this.znear, 0));
         square.normals.push( vec4(x + 0.01, y + 0.01, -this.znear, 0));
         square.normals.push( vec4(x + 0.01, y + 0.01, -this.znear, 0));
+        square.setColor(Color.rgb_245_000_087);
 
         if(pick != 1) {
             this.controlPoints[this.pickPoint] = p;
@@ -299,6 +306,8 @@ CGCanvas2D.prototype = {
         line.vertices  = this.controlPoints;
         for(i = 0; i < this.controlPoints.length; i++)
             line.normals.push(vec4(this.controlPoints[i][0], this.controlPoints[i][1], this.controlPoints[i][2], 0))
+            
+        line.setColor(Color.rgb_069_090_100);
         this.scene.meshes.push(line);
 
         if(this.isSpline) {
@@ -309,6 +318,7 @@ CGCanvas2D.prototype = {
                 curveObj.primitive = this.gl.LINE_STRIP;
                 curveObj.vertices  = this.curve.drawPoints;
                 curveObj.normals   = this.curve.drawNormals;
+                curveObj.setColor(Color.rgb_000_128_148);
                 this.scene.meshes.push(curveObj);
             }
         }
@@ -319,6 +329,7 @@ CGCanvas2D.prototype = {
             curveObj.primitive = this.gl.LINE_STRIP;
             curveObj.vertices  = this.curve.drawPoints;
             curveObj.normals   = this.curve.drawNormals;
+            curveObj.setColor(Color.rgb_000_128_148);
             this.scene.meshes.push(curveObj);   
         }
 
@@ -373,6 +384,7 @@ CGCanvas2D.prototype = {
         square.normals.push( vec4(newx + 0.01, newy + 0.01, -this.znear, 0));
         square.normals.push( vec4(newx + 0.01, newy + 0.01, -this.znear, 0));
         square.normals.push( vec4(newx + 0.01, newy + 0.01, -this.znear, 0));
+        square.setColor(Color.rgb_245_000_087);
 
         this.controlPoints[this.pickPoint] = vec4(newx, newy, -this.znear, 1);
         this.scene.meshes[this.pickPoint]  = square;
@@ -381,7 +393,9 @@ CGCanvas2D.prototype = {
         line.primitive = this.linePrimitive;
         line.vertices  = this.controlPoints;
         for(i = 0; i < this.controlPoints.length; i++)
-            line.normals.push(vec4(this.controlPoints[i][0], this.controlPoints[i][1], this.controlPoints[i][2], 0))
+            line.normals.push(vec4(this.controlPoints[i][0], this.controlPoints[i][1], this.controlPoints[i][2], 0));
+            
+        line.setColor(Color.rgb_069_090_100);
         this.scene.meshes.push(line);
 
         if(this.curve != null) {
@@ -391,6 +405,7 @@ CGCanvas2D.prototype = {
             curveObj.primitive = this.gl.LINE_STRIP;
             curveObj.vertices  = this.curve.drawPoints;
             curveObj.normals   = this.curve.drawNormals;
+            curveObj.setColor(Color.rgb_000_128_148);
             this.scene.meshes.push(curveObj);
         }
 
