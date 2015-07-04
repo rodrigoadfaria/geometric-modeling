@@ -14,7 +14,6 @@ CGCanvas2D = function(id, isClose) {
     }
     
     this.gl      = _gl;
-    this.is3D    = false;
     this.program = null;
     
     this.degree              = 3;
@@ -61,6 +60,9 @@ CGCanvas2D = function(id, isClose) {
         this.linePrimitive = this.gl.LINE_STRIP;
 };
 
+//FIXME
+CGCanvas2D.closedSpline = null;
+CGCanvas2D.surface = null;
 CGCanvas2D.prototype = {
 
     prepare: function() {
@@ -106,6 +108,7 @@ CGCanvas2D.prototype = {
         curveObj.primitive = this.gl.LINE_STRIP;
         curveObj.vertices  = this.curve.drawPoints;
         curveObj.normals   = this.curve.drawPoints;
+        curveObj.setColor(Color.rgb_000_128_148);
         this.scene.meshes.pop();
         this.scene.add(curveObj);
 
@@ -188,6 +191,7 @@ CGCanvas2D.prototype = {
         square.normals.push( vec4(x + 0.01, y + 0.01, -this.znear, 0));
         square.normals.push( vec4(x + 0.01, y + 0.01, -this.znear, 0));
         square.normals.push( vec4(x + 0.01, y + 0.01, -this.znear, 0));
+        square.setColor(Color.rgb_245_000_087);
 
         if(pick != 1) {
             this.controlPoints[this.pickPoint] = p;
@@ -203,6 +207,7 @@ CGCanvas2D.prototype = {
         line.primitive = this.linePrimitive;
         line.vertices  = this.controlPoints;
         line.normals   = this.controlPoints;
+        line.setColor(Color.rgb_069_090_100);
         this.scene.meshes.push(line);
 
         if(this.controlPoints.length >= this.degree + 1) {
@@ -212,7 +217,29 @@ CGCanvas2D.prototype = {
             curveObj.primitive = this.gl.LINE_STRIP;
             curveObj.vertices  = this.curve.drawPoints;
             curveObj.normals   = this.curve.drawPoints;
+            curveObj.setColor(Color.rgb_000_128_148);
             this.scene.meshes.push(curveObj);
+            
+
+            // FIXME testing the open spline
+            if (this.curve && this.curve.isClose) {
+                CGCanvas2D.closedSpline = curveObj.vertices;
+            }
+
+            if (!this.isClose) {
+                if (CGCanvas2D.closedSpline != undefined && CGCanvas2D.closedSpline != null && CGCanvas2D.closedSpline.length > 0) {
+                    var controlPointsx = [];
+                    var controlPointsy = [];
+                    for(k = 0; k < this.controlPoints.length; k++) {
+                        controlPointsx.push(this.controlPoints[k][0]); //x
+                        controlPointsy.push(this.controlPoints[k][1]); //y
+                    }
+                    
+                    //CGCanvas2D.surface = openSpline(this.domain[0], this.domain[1], this.numPoints, this.degree, 
+                    //                                controlPointsx, controlPointsy, CGCanvas2D.closedSpline)
+                }
+            }
+
         }
 
         init();
@@ -270,6 +297,7 @@ CGCanvas2D.prototype = {
         square.normals.push( vec4(newx + 0.01, newy + 0.01, -this.znear, 0));
         square.normals.push( vec4(newx + 0.01, newy + 0.01, -this.znear, 0));
         square.normals.push( vec4(newx + 0.01, newy + 0.01, -this.znear, 0));
+        square.setColor(Color.rgb_245_000_087);
 
         this.controlPoints[this.pickPoint] = vec4(newx, newy, -this.znear, 1);
         this.scene.meshes[this.pickPoint]  = square;
@@ -278,6 +306,7 @@ CGCanvas2D.prototype = {
         line.primitive = this.linePrimitive;
         line.vertices  = this.controlPoints;
         line.normals   = this.controlPoints;
+        line.setColor(Color.rgb_069_090_100);
         this.scene.meshes.push(line);
 
         if(this.curve != null) {
@@ -287,7 +316,9 @@ CGCanvas2D.prototype = {
             curveObj.primitive = this.gl.LINE_STRIP;
             curveObj.vertices  = this.curve.drawPoints;
             curveObj.normals   = this.curve.drawPoints;
+            curveObj.setColor(Color.rgb_000_128_148);
             this.scene.meshes.push(curveObj);
+            
         }
 
         init();
