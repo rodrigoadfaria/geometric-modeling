@@ -84,6 +84,9 @@ CGCanvas2D.prototype = {
     setDegree: function(degree) {
         this.degree = degree != undefined ? degree : 3;//3 default
 
+        if(this.controlPoints == null)
+            return;
+
         if(this.isSpline) {
             if(this.controlPoints.length >= this.degree + 1) {
                 var curveObj = new Obj();
@@ -124,7 +127,7 @@ CGCanvas2D.prototype = {
     setNumberOfPoints: function(nPoints) {
         this.numPoints = nPoints != undefined ? nPoints : 200;//200 default
 
-        if(this.curve == null)
+        if(this.controlPoints == null || this.curve == null)
             return;
 
         if(this.curve != null)
@@ -148,7 +151,7 @@ CGCanvas2D.prototype = {
 
         this.sigma= sigma;
 
-        if(this.isSpline)
+        if(this.isSpline || this.controlPoints == null)
             return;
 
         if(this.curve != null)
@@ -171,6 +174,9 @@ CGCanvas2D.prototype = {
             return;
 
         this.isSpline = isSpline;
+
+        if(this.controlPoints == null)
+            return;
         
         if(this.isSpline) {
             if(this.controlPoints.length >= this.degree + 1) {
