@@ -205,8 +205,6 @@ Polynomial.prototype = {
         }
     },
    
-
-    // Em construcao
     RaGsNormalsClose: function() { 
         var n        = [0, 0];
         var sumGauss = 0;
@@ -219,8 +217,10 @@ Polynomial.prototype = {
             for(j = 0; j < this.control.length; j++) {
                 gauss    = 0;
                 sumGauss = 0;
-                for(l = -limit; l <= limit; l++)
-                    gauss += (this.domain[i] - this.knot[j] - l)/Math.pow(this.sigma, 2) * Math.exp(-1 * Math.pow((this.domain[i] - this.knot[j] - l), 2)/(2 * Math.pow(this.sigma, 2)));
+                for(l = -limit; l <= limit; l++) {
+                    gauss += (this.domain[i] - this.knot[j] - l)/Math.pow(this.sigma, 2) *
+                    Math.exp(-1 * Math.pow((this.domain[i] - this.knot[j] - l), 2)/(2 * Math.pow(this.sigma, 2)));
+                }
                 for(k = 0; k < this.control.length; k++) {
                     aux = 0;
                     for(l = -limit; l <= limit; l++)
@@ -236,11 +236,18 @@ Polynomial.prototype = {
                 
                 gauss    = 0;
                 sumGauss = 0;
-                for(l = -limit; l <= limit; l++)
-                    gauss += Math.pow(this.sigma, 4) * Math.exp(-1 * Math.pow((this.domain[i] - this.knot[j] - l), 2)/(2 * Math.pow(this.sigma, 2)));
-                for(k = 0; k < this.control.length; k++)
-                    sumGauss += (this.domain[i] - this.knot[k]) * 
-                                Math.exp(-1 * Math.pow((this.domain[i] - this.knot[k]), 2)/(2 * Math.pow(this.sigma, 2)));
+                for(l = -limit; l <= limit; l++) {
+                    gauss += Math.pow(this.sigma, 4) *
+                    Math.exp(-1 * Math.pow((this.domain[i] - this.knot[j] - l), 2)/(2 * Math.pow(this.sigma, 2)));
+                }
+                for(k = 0; k < this.control.length; k++) {
+                    aux = 0;
+                    for(l = -limit; l<= limit; l++) {
+                        aux += (this.domain[i] - this.knot[k] - l) * 
+                                Math.exp(-1 * Math.pow((this.domain[i] - this.knot[k] - l), 2)/(2 * Math.pow(this.sigma, 2)));
+                    }
+                    sumGauss += aux;
+                }
                 if(sumGauss != 0)
                     var G = gauss/Math.pow(sumGauss, 2);
                 else
