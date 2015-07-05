@@ -43,11 +43,6 @@ CGCanvas3D = function(id) {
     
 	this.virtualTB = new VirtualTrackBall();
     
-    this.newMouseX = null;
-    this.newMouseY = null;
-    this.oldMouseX = null;
-    this.oldMouseY = null;
-    
     this.tempMouseY = 0;
     
     this.setupCanvasMouseEvents();
@@ -56,6 +51,9 @@ CGCanvas3D = function(id) {
 
 CGCanvas3D.prototype = {
 
+    /**
+    * Prepare the canvas element for drawing.
+    */
     prepare: function() {
         // create viewport and clear color
         this.gl.viewport(0, 0, this.canvas.width, this.canvas.height );
@@ -185,7 +183,9 @@ CGCanvas3D.prototype = {
         render();
     },
 
-
+    /**
+    * Key up event listener to clean the scene.
+    */
     keyUpListener: function(event) {
         var code = (event.keyCode ? event.keyCode : event.which);
         if (code == 46 || code == 88) {// DEL or X

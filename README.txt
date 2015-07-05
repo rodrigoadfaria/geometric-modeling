@@ -16,43 +16,60 @@
 
 README
 ------
-  OBJ viewer is a web tool capable of load and render a 3D object defined by a modelling tool such as
-  Blender, Maya, and others. Find out how to use this tool in the man section of this file.
+  Geometric modelling is a web tool capable of drawing some amazing curves and extrude them to create
+  a mesh object such as Blender, Maya, and others tools.
+  Find out how to use this tool in the man section of this file.
 
 CONFIG
 ------
   You do not need any previous configuration to run the application, just use a web browser that supports
   HTML5 canvas and WebGL technology.
-  The only thing you need is to look for .obj files or create them using a modelling tool like those
-  mentioned in the previous section. In the 'sample_obj' directory, you can find a sample .obj file.
 
 MAN
 ---
-  Just open the 'objViewer.html' page in your preferred web browser and enjoy it! We have detailed aspects
-  regarding the features above:
+  Just open the 'index.html' page in your preferred web browser and see the magic! You are gonna see 3 different
+  canvas objects which are responsible for closed curves drawing, open curves drawing and extrusion, respectively.
+  We have detailed aspects regarding the features above:
   
-  [Load OBJ file...] read a .obj file with the description of faces, vertices, normals and object name.
-  Some commands such as 'mtllib', 'usemtl', are not being read.
-  When you load an object, you can see it is description on the left side menu.
+  |PROFILE/PATH SEGMENT CANVAS|
+  These are the first and second canvas, respectively. It's used to render the curves to be extruded in the 3rd 
+  canvas object.
   
-  [Shader Vertex/Fragment] toggle between two different shaders. This option stop the current vertex/fragment shaders
-  and load a new one with different shading algorithm.
+    [Control point drawing] you can use the left/right mouse click to draw control points in the canvas object.
+    
+    [Control point moving] you can drag and move a simple control point by pressing and holding it with the left mouse
+    click to change the curve appearance.
+    
+    [Curve parameters]
+      [Type] choose the type of the curve to be built in (RaGs/B-Spline).
+    
+      [Subdivision] enter the number of subdivisions to generate the curves.
+    
+      [Degree] the polynomial degree used to generate the curves.
+    
+      [Sigma] is the standard deviation of the RaGs curves - determines the degree of localness of the corresponding
+      control point on the shape of the curve.
+
+  |EXTRUSION CANVAS|
+  This canvas is used to extrude the profile (closed) curve by the path (open) segment in order to create a 3D
+  mesh.
   
-  [Mesh Flat/Smooth] toggle the method of shading from flat to smooth and vice versa.
+    [Zoom in/out] zoom in/out the scene by rolling the mouse wheel or by holding the right click and 
+    dragging to any direction (available only for the extrusion canvas).
   
-  [Draw Triangles/Lines] toggle the method of drawing from triangles to line strip and vice versa.
+    [Rotation] rotate the scene by holding the left click and dragging to any direction (available only for 
+    the extrusion canvas).
+
+  |COMMON|
+  Features available for all canvas objects.
   
-  [Rotation] rotate the scene by holding the left click and dragging to any direction.
-  
-  [Zoom in/out] zoom in/out the scene by rolling the mouse wheel or by holding the right click and 
-  dragging to any direction.
-  
-  [Manipulator] you can manipulate an object by selecting it in the left menu. Once you select it, point the mouse
-  in the canvas area and press 'R' or 'r' to rotate, 'T' or 't' to translate and 'S' or 's' to scale. You might press 
-  'X' or 'x', 'Y' or 'y' or 'Z' or 'z' to choose an axis to apply the transformation on a given axis.
-  You can delete an object pressing 'X', 'x' or 'DEL'. It is important to remember that this feature only works if 
-  you haven't pressed any keyword for transformations.
-  You can deselect the object pressing 'ESC'.
+    [Clear] you can clear the canvas by pressing 'X', 'x' or 'DEL', or the 'Clear' button within the 'Curve parameters'
+    floating menu.
+
+AUTHORS
+-------
+  Caio Dadauto: graduate student in Physics. Institute of Physics - University of Sao Paulo.
+  Rodrigo Faria: master degree candidate in Computer Science. Institute of Mathematics and Statistics - University of Sao Paulo.
 
 CONTACT
 -------
@@ -61,18 +78,24 @@ CONTACT
 
 STRUCTURE
 ---------
-│   obj-reader.js
-│   obj-viewer.html
-│   obj-viewer.js
+│   index.html
+│   index.js
 │   README.txt
 │
 ├───documents
-│       EP2.pdf
+│       EP3.pdf
+│       R-snake.pdf
+│       referenciaRaGs.pdf
 │
 ├───js
-│       Manipulator.js
+│       CGCanvas2D.js
+│       CGCanvas3D.js
+│       Colors.js
+│       Obj.js
+│       Polynomial.js
 │       Quaternion.js
-│       Scene.js
+│       Scene2D.js
+│       Scene3D.js
 │       VirtualTrackBall.js
 │
 ├───libs
@@ -80,9 +103,6 @@ STRUCTURE
 │       jquery-2.1.3.min.js
 │       MV.js
 │       webgl-utils.js
-│
-├───sample_obj
-│       teapot.obj
 │
 └───style
     │   style.css
@@ -104,8 +124,11 @@ NOTICE
 REFERENCE
 ---------
   These are the list of references used for this application:
-  1. Learning WebGL http://learningwebgl.com/blog/?page_id=1217
-  2. Marcel P. Jackowski - Lecture notes from MAC-0420-5744 - Computer Graphics, University of Sao Paulo
-  3. K. Matsuda, R. Lea - WebGL Programming Guide, Addison-Wesley, 2013
-  4. Shirley & Marschner - Fundamentals of Computer Graphics, 3rd Ed., CRC Press, 2010
-  5. Quaternions algebra, http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/index.htm
+  1. Learning WebGL http://learningwebgl.com/blog/?page_id=1217.
+  2. Marcel P. Jackowski. Lecture notes from MAC-0420-5744 - Computer Graphics, University of Sao Paulo.
+  3. Matsuda K.; Lea R. "WebGL Programming Guide", Addison-Wesley, 2013.
+  4. Shirley & Marschner. "Fundamentals of Computer Graphics", 3rd Ed., CRC Press, 2010.
+  5. Quaternions algebra, http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/index.htm.
+  6. Goshtasby, A. "Geometric modelling using rational Gaussian curves and surfaces", Computer Aided Design , v. 27:5, pp. 363375, 1995.
+  7. Zagorchev, L.; Goshtasby, A.; Satter, M. "R-snakes", Image and Vision Computing - ScienceDirect, v. 25, pp. 945–959, 2007.
+  8. Hill, Francis S., and Stephen M. Kelley. "Computer graphics : using OpenGL". Upper Saddle River, NJ: Pearson Prentice Hall, 2007.

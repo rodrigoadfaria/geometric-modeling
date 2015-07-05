@@ -1,5 +1,5 @@
 /**
-* Used to define default colors for the rendering.
+* Used to define default colours for the rendering.
 */
 var Color = {
     rgb_245_000_087 : vec4( 245/255,    0.0,        87/255,  1.0 ), // #f50057

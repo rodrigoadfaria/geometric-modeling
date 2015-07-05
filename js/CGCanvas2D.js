@@ -64,6 +64,9 @@ CGCanvas2D = function(id, isClose) {
 
 CGCanvas2D.prototype = {
 
+    /**
+    * Prepare the canvas element for drawing.
+    */
     prepare: function() {
         // create viewport and clear color
         this.gl.viewport(0, 0, this.canvas.width, this.canvas.height );
@@ -454,6 +457,9 @@ CGCanvas2D.prototype = {
         init();
     },
 
+    /**
+    * Get the mouse movement offset.
+    */
     getDeltaMove: function(x, y) {
         if(this.tempMouse == null) {
             this.tempMouse = [x, y];
@@ -473,12 +479,14 @@ CGCanvas2D.prototype = {
     mouseWheelListener: function(event) {
     },
 
+    /**
+    * Key up event listener to clean the scene.
+    */    
     keyUpListener: function(event) {
         var code = (event.keyCode ? event.keyCode : event.which);
         
-        if (code == 46) {
+        if (code == 46 || code == 88) {// DEL or X
             if(this.controlPoints == null) {
-                console.log("Nenhum ponto a ser deletado!")
                 return;
             } else {
                 this.clear();
@@ -486,6 +494,9 @@ CGCanvas2D.prototype = {
         }
     },
     
+    /**
+    * Clear the entire scene.
+    */
     clear: function() {
         this.controlPoints = null;
         this.curve         = null;
