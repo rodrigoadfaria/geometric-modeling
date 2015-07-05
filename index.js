@@ -24,7 +24,7 @@ $( document ).ready(function() {
     canvasClosed    = new CGCanvas2D("gl-canvas-closed-curve", true);
     canvasOpen      = new CGCanvas2D("gl-canvas-open-curve", false);
     
-    //canvasObjs.push(canvasExtrusion);
+    canvasObjs.push(canvasExtrusion);
     canvasObjs.push(canvasOpen);    
     canvasObjs.push(canvasClosed);
     
@@ -146,7 +146,7 @@ function resizeCanvas() {
         }
         
         offset = canvas.width;
-        if(cgCanvas.is3D)
+        if(cgCanvas instanceof CGCanvas3D)
             cgCanvas.aspect = canvas.width/canvas.height;
     });
     
@@ -169,11 +169,12 @@ function render() {
         gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         viewMatrix = lookAt(cgCanvas.eye, cgCanvas.at, cgCanvas.up);
-        if(cgCanvas.is3D) {
+        if(cgCanvas instanceof CGCanvas3D) {
             var vtrm = cgCanvas.virtualTB.getRotationMatrix();
             viewMatrix = mult(viewMatrix, vtrm);
         }
-        if(cgCanvas.is3D)
+        
+        if(cgCanvas instanceof CGCanvas3D)
             projectionMatrix = perspective(cgCanvas.fovy, cgCanvas.aspect, cgCanvas.znear, cgCanvas.zfar);
         else
             projectionMatrix = ortho(cgCanvas.xleft, cgCanvas.xright, cgCanvas.ybottom, cgCanvas.ytop, cgCanvas.znear, cgCanvas.zfar);

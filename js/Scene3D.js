@@ -20,11 +20,11 @@ Scene3D.prototype = {
 	*/
 	add: function(object) {
 		if (object) {
-			object.draw_normals = object.normals;
 			if (this.isSmoothShading)
-				object.draw_normals = object.smooth_normals;
+				object.normals = object.smooth_normals;
 			
-			this.meshes.push(object);
+			object.computeModelMatrix();
+            this.meshes.push(object);
 		}
 	},
 	
@@ -42,31 +42,15 @@ Scene3D.prototype = {
 				if (index === i) {
 					this.gl.deleteBuffer(rBuffer.nBuffer);
 					this.gl.deleteBuffer(rBuffer.vBuffer);
+                    this.gl.deleteBuffer(rBuffer.cBuffer);
 				} else {
 					tmpMeshes.push(rObject);
 					tmpBuffers.push(rBuffer);
 				}
 			}
 			
-			this.gl.deleteBuffer(rBuffer.nBuffer);
-			this.gl.deleteBuffer(rBuffer.vBuffer);
-					
 			this.buffers = tmpBuffers;
 			this.meshes = tmpMeshes;
-		}
-	},
-	
-	/**
-	* Clean up the buffers and meshes, create them again once the flat/smooth
-	* has changed.
-	*/
-	toggleMeshShader: function() {
-		var objects = this.meshes;
-		this.buffers = new Array();
-		this.meshes = new Array();
-		
-		for (i = 0; i < objects.length; i++) {
-			this.add(objects[i]);
 		}
 	},
 

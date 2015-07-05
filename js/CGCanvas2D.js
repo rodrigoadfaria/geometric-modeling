@@ -14,7 +14,6 @@ CGCanvas2D = function(id, isClose) {
     }
     
     this.gl      = _gl;
-    this.is3D    = false;
     this.program = null;
     
     this.degree              = 3;
@@ -59,6 +58,8 @@ CGCanvas2D = function(id, isClose) {
         this.linePrimitive = this.gl.LINE_LOOP;
     else
         this.linePrimitive = this.gl.LINE_STRIP;
+        
+    this.setupCanvasMouseEvents();
 };
 
 CGCanvas2D.prototype = {
@@ -75,7 +76,6 @@ CGCanvas2D.prototype = {
         this.gl.useProgram( this.program );
         
         this.scene.setGlAndProgram(this.gl, this.program);
-        this.setupCanvasMouseEvents();
     },
 
     /**
@@ -182,10 +182,9 @@ CGCanvas2D.prototype = {
         if(this.controlPoints == null)
             return;
         
+        var curveObj = new Obj();
         if(this.isSpline) {
             if(this.controlPoints.length >= this.degree + 1) {
-                var curveObj = new Obj();
-
                 if(this.curve != null)
                     this.scene.meshes.pop();
                 this.curve = new Polynomial(this.controlPoints, this.isSpline, this.degree, this.isClose, this.numPoints, this.sigma);
@@ -193,18 +192,15 @@ CGCanvas2D.prototype = {
                 curveObj.vertices  = this.curve.drawPoints;
                 curveObj.normals   = this.curve.drawNormals;
                 curveObj.setColor(Color.rgb_000_128_148);
+
                 this.scene.meshes.push(curveObj);
-            }
-            else {
+            } else {
                 if(this.curve != null) {
                     this.curve = null;
                     this.scene.meshes.pop();
                 }
             }
-        }
-        else {
-            var curveObj = new Obj();
-
+        } else {
             if(this.curve != null)
                 this.scene.meshes.pop();
             this.curve = new Polynomial(this.controlPoints, this.isSpline, this.degree, this.isClose, this.numPoints, this.sigma);
@@ -213,6 +209,17 @@ CGCanvas2D.prototype = {
             curveObj.normals   = this.curve.drawNormals;
             curveObj.setColor(Color.rgb_000_128_148);
             this.scene.meshes.push(curveObj);
+        }
+
+        //deep copy of the object
+        if (this.isClose) {
+            var canvas = canvasObjs[0];
+            if (canvas && canvas.id == "gl-canvas-extrusion") {
+                canvas.clear();
+                var extrusion = $.extend(true, {}, curveObj);
+                extrusion.primitive = this.gl.TRIANGLES_STRIP;
+                canvas.scene.add(extrusion)
+            }
         }
 
         init();
@@ -225,22 +232,37 @@ CGCanvas2D.prototype = {
         var mObject = this;
         
         mObject.canvas.addEventListener("mousedown", function(event) {
+            event = event || window.event; // cross-browser event
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+        
             mObject.mouseDownListener(event);
         });
 
         mObject.canvas.addEventListener("mouseup", function(event) {
+            event = event || window.event; // cross-browser event
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+        
             mObject.mouseUpListener(event);
         });
 
         mObject.canvas.addEventListener("mousemove", function(event) {
+            event = event || window.event; // cross-browser event
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+        
             mObject.mouseMoveListener(event);
         });
 
         mObject.canvas.addEventListener("mousewheel", function(event) {
+            event = event || window.event; // cross-browser event
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+        
             mObject.mouseWheelListener(event);
         });
 
         mObject.canvas.addEventListener("keyup", function(event) {
+            event = event || window.event; // cross-browser event
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+        
             mObject.keyUpListener(event);
         });
     },
@@ -310,21 +332,18 @@ CGCanvas2D.prototype = {
         line.setColor(Color.rgb_069_090_100);
         this.scene.meshes.push(line);
 
+        var curveObj = new Obj();
         if(this.isSpline) {
             if(this.controlPoints.length >= this.degree + 1) {
-                var curveObj = new Obj();
-
                 this.curve = new Polynomial(this.controlPoints, this.isSpline, this.degree, this.isClose, this.numPoints, this.sigma);
                 curveObj.primitive = this.gl.LINE_STRIP;
                 curveObj.vertices  = this.curve.drawPoints;
                 curveObj.normals   = this.curve.drawNormals;
                 curveObj.setColor(Color.rgb_000_128_148);
+
                 this.scene.meshes.push(curveObj);
             }
-        }
-        else {
-            var curveObj = new Obj();
-
+        } else {
             this.curve = new Polynomial(this.controlPoints, this.isSpline, this.degree, this.isClose, this.numPoints, this.sigma);
             curveObj.primitive = this.gl.LINE_STRIP;
             curveObj.vertices  = this.curve.drawPoints;
@@ -333,6 +352,17 @@ CGCanvas2D.prototype = {
             this.scene.meshes.push(curveObj);   
         }
 
+        //deep copy of the object
+        if (this.isClose) {
+            var canvas = canvasObjs[0];
+            if (canvas && canvas.id == "gl-canvas-extrusion") {
+                canvas.clear();
+                var extrusion = $.extend(true, {}, curveObj);
+                extrusion.primitive = this.gl.TRIANGLES_STRIP;
+                canvas.scene.add(extrusion)
+            }
+        }
+        
         init();
     },
 
@@ -407,6 +437,18 @@ CGCanvas2D.prototype = {
             curveObj.normals   = this.curve.drawNormals;
             curveObj.setColor(Color.rgb_000_128_148);
             this.scene.meshes.push(curveObj);
+            
+            if (this.isClose) {
+                //deep copy of the object
+                var canvas = canvasObjs[0];
+                if (canvas && canvas.id == "gl-canvas-extrusion") {
+                    canvas.clear();
+                    var extrusion = $.extend(true, {}, curveObj);
+                    extrusion.primitive = this.gl.TRIANGLES_STRIP;
+                    canvas.scene.add(extrusion)
+                }
+
+            }
         }
 
         init();

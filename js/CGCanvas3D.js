@@ -22,7 +22,7 @@ CGCanvas3D = function(id) {
     this.modelMatrixLoc = null;
     
     // camera default definitions
-    this.eye = vec3(0.0, 0.0, 30.0);
+    this.eye = vec3(0.0, 0.0, 1.2);
     this.at = vec3(0.0, 0.0, 0.0);
     this.up = vec3(0.0, 1.0, 0.0);
 
@@ -42,16 +42,15 @@ CGCanvas3D = function(id) {
     this.fragShaderName = "fragment-shader";
     
 	this.virtualTB = new VirtualTrackBall();
-	this.manipulator = new Manipulator();
     
-    
-    this.startManipulator = false;
     this.newMouseX = null;
     this.newMouseY = null;
     this.oldMouseX = null;
     this.oldMouseY = null;
     
     this.tempMouseY = 0;
+    
+    this.setupCanvasMouseEvents();
 
 };
 
@@ -69,8 +68,6 @@ CGCanvas3D.prototype = {
         this.gl.useProgram( this.program );
         
         this.scene.setGlAndProgram(this.gl, this.program);
-        
-        this.setupCanvasMouseEvents();
     },
 
     /**
@@ -82,19 +79,37 @@ CGCanvas3D.prototype = {
         mObject.virtualTB.setCanvasSize(mObject.canvas.width, mObject.canvas.height);
         
         mObject.canvas.addEventListener("mousedown", function(event) {
+            event = event || window.event; // cross-browser event
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+
             mObject.mouseDownListener(event);
         });
+        
         mObject.canvas.addEventListener("mouseup", function(event) {
+            event = event || window.event; // cross-browser event
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+
             mObject.mouseUpListener(event);
         });
+        
         mObject.canvas.addEventListener("mousemove", function(event) {
+            event = event || window.event; // cross-browser event
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+
             mObject.mouseMoveListener(event);
         });
+        
         mObject.canvas.addEventListener("mousewheel", function(event) {
+            event = event || window.event; // cross-browser event
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+
             mObject.mouseWheelListener(event);
         });
         
         mObject.canvas.addEventListener("keyup", function(event) {
+            event = event || window.event; // cross-browser event
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+
             mObject.keyUpListener(event);
         });
     },
@@ -135,45 +150,17 @@ CGCanvas3D.prototype = {
                 var x = event.clientX - rect.left;
                 var y = event.clientY - rect.top;
                 
-                if (this.manipulator.active) { //manipulating an object
-                    // user already has taken a choice either transformation
-                    // and axis
-                    this.newMouseX = 2 * ((event.pageX - rect.left)/rect.width) - 1;
-                    this.newMouseY = 1 - 2 * ((event.pageY - rect.top)/rect.height);
-                    if(this.startManipulator) {
-                        this.oldMouseX = this.newMouseX;
-                        this.oldMouseY = this.newMouseY;
-                        this.startManipulator = false;
-                    }
-                    if(this.oldMouseX != this.newMouseX) {
-                        if(this.oldMouseX < this.newMouseX)
-                            var d = 1;
-                        else
-                            var d = -1;
-                    } else if(this.oldMouseY != this.newMouseY) {
-                        if(this.oldMouseY < this.newMouseY)
-                            var d = 1;
-                        else
-                            var d = -1;
-                    } else {
-                        var d = 0;
-                    }
-
-                    if (this.manipulator.type != null && this.manipulator.axis != null)
-                        this.manipulator.apply(d);
-                    
-                    this.oldMouseX = this.newMouseX;
-                    this.oldMouseY = this.newMouseY;
-                    this.manipulator.updateView();
-                } else {// manipulating the world
-                    this.virtualTB.rotateTo(x, y);
-                }
+                // manipulating the world
+                this.virtualTB.rotateTo(x, y);
             }
             
             render();
         }
     },
 
+    /**
+    * Get the mouse move direction.
+    */
     getMouseMoveDirection: function (event) {
         var direction = event.pageY > this.tempMouseY;
         
@@ -201,58 +188,19 @@ CGCanvas3D.prototype = {
 
     keyUpListener: function(event) {
         var code = (event.keyCode ? event.keyCode : event.which);
-        
-        var index = this.manipulator.getActiveObjectIndex();
-        var msg = "Select an object in the left menu or load an object file if none.";
-        
-        if (code == Key.T || code == Key.R || code == Key.S) {
-            if (index == -1) {
-                alert(msg)
-                return;
-            }
-
-            this.manipulator.setType(code);
-            this.manipulator.makeOffsetView();//no parameter clean the div
-            this.manipulator.updateView();
-        }
-        
-        if (code == Key.X || code == Key.Y || code == Key.Z) {
-            if (this.manipulator.type != null) {//user already selected an axis
-                this.manipulator.setAxis(code);
-                this.manipulator.active = true;
-                this.startManipulator = true;
-
-                this.manipulator.updateView();
-            }
-        }
-        
-        if (!this.manipulator.active) {
-            if (code == Key.DEL || code == Key.X) {
-                if (index == -1) {
-                    alert(msg)
-                    return;
-                }
-                
-                scene.remove(index);
-                this.manipulator.setActiveObjectIndex(-1);
-                rebuildList();
-                this.manipulator.updateView();
-                
-                render();
-            }
-        }
-        
-        if (code == Key.ESC) {
-            this.manipulator.type = null;
-            this.manipulator.axis = null;
-            this.manipulator.active = false;
-            this.manipulator.setActiveObjectIndex(-1);
-            
-            $('#exp-obj-list>li').removeClass('active');
-            this.manipulator.updateView();
+        if (code == 46 || code == 88) {// DEL or X
+            this.clear();
             
             render();
         }
-    } 
+    },
+    
+    /**
+    * Clear the entire scene.
+    */
+    clear: function() {
+        this.scene = new Scene3D();
+        init();
+    }    
     
 };
