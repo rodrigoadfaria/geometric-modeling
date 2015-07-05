@@ -1,0 +1,1 @@
+zip -9 -r --exclude=*.git* --exclude=*zipme.bat* geometric-modeling-rodrigo_faria-caio_dadauto.zip .
